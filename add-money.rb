@@ -13,10 +13,14 @@ b.text_field(:css => "[type='password']").when_present.set password
 b.button(:text => "Login").click
 failed_list = []
 passed_list = []
+skipped_list = []
 b.textarea.when_present.send_keys(["Auto entering contribution now. Please do not type anything here until you see 'bot finished entering contribution.' message.", :enter])
 sleep 5
 File.readlines(contribution_file_path).each do |text_to_send|
   text_to_send = text_to_send.chomp
+  if text_to_send.split(" ").size != 3
+    skipped_list << "Skip: #{text_to_send}"
+  end
   amount = text_to_send.split(" ").last
   user = text_to_send.split(" ")[-2][1..-1]
   tries = 0
@@ -26,7 +30,7 @@ File.readlines(contribution_file_path).each do |text_to_send|
     found = false
     pattern = /Added.+\[#{user}\].+cash/
     10.times do
-      last_div = b.div(:class => /^messagesWrapper.*/).div(:class => /^messages.*/).divs.last
+      last_div = b.div(:class => /^messagesWrapper.*/).div(:class => /^messages.*/).divs.last rescue puts "error when getting last message"
       if last_div.text =~ pattern
         found = true
         passed_list << "#{user} #{amount}"
@@ -53,6 +57,9 @@ puts summary
 b.textarea.when_present.send_keys([summary, :enter])
 sleep(3)
 summary = "Failed to add money:\n #{failed_list.join("\n")}"
+puts summary
+b.textarea.when_present.send_keys([summary, :enter])
+summary = "Skipped due to improper data:\n #{skipped_list.join("\n")}"
 puts summary
 b.textarea.when_present.send_keys([summary, :enter])
 sleep(3)
