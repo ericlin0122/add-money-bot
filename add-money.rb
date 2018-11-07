@@ -11,6 +11,8 @@ b.goto(room_uri)
 b.text_field(:css => "[type='email']").when_present.set username
 b.text_field(:css => "[type='password']").when_present.set password
 b.button(:text => "Login").click
+failed_list = []
+passed_list = []
 File.readlines(contribution_file_path).each do |text_to_send|
   text_to_send = text_to_send.chomp
   user = text_to_send.split(" ")[-2][1..-1]
@@ -24,6 +26,7 @@ File.readlines(contribution_file_path).each do |text_to_send|
       last_div = b.div(:class => /^messagesWrapper.*/).div(:class => /^messages.*/).divs.last
       if last_div.text =~ pattern
         found = true
+        passed_list << text_to_send
         puts "sent: #{text_to_send}"
         break
       else
@@ -33,6 +36,7 @@ File.readlines(contribution_file_path).each do |text_to_send|
     raise("unable to send: #{text_to_send}") unless found
   rescue Exception => e
     if tries <= 0
+      failed_list << text_to_send
       puts e.message
     else
       tries -= 1
@@ -41,6 +45,12 @@ File.readlines(contribution_file_path).each do |text_to_send|
     end
   end
 end
+summary = "Successfully added money:\n #{passed_list.join("\n")}"
+b.textarea.when_present.send_keys([summary, :enter])
+sleep(3)
+summary = "Failed to add money:\n #{failed_list.join("\n")}"
+b.textarea.when_present.send_keys([summary, :enter])
+sleep(3)
 
 #logout
 b.button(:css => "[aria-label='User Settings']").when_present.click
