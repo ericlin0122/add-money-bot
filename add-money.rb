@@ -30,14 +30,18 @@ File.readlines(contribution_file_path).each do |text_to_send|
     found = false
     pattern = /Added.+\[#{user}\].+cash/
     10.times do
-      last_div = b.div(:class => /^messagesWrapper.*/).div(:class => /^messages.*/).divs.last rescue puts "error when getting last message"
-      if last_div.text =~ pattern
-        found = true
-        passed_list << "#{user} #{amount}"
-        puts "sent: #{text_to_send}"
-        break
-      else
-        # sleep 1
+      begin
+        last_div = b.div(:class => /^messagesWrapper.*/).div(:class => /^messages.*/).divs.last
+        if last_div.text =~ pattern
+          found = true
+          passed_list << "#{user} #{amount}"
+          puts "sent: #{text_to_send}"
+          break
+        else
+          # sleep 1
+        end
+      rescue
+        puts "error when getting last message"
       end
     end
     raise("unable to send: #{text_to_send}") unless found
