@@ -20,6 +20,7 @@ File.readlines(contribution_file_path).each do |text_to_send|
   text_to_send = text_to_send.chomp
   if text_to_send.split(" ").size < 3
     skipped_list << "Skip: #{text_to_send}"
+    next
   end
   amount = text_to_send.split(" ").last
   splits = text_to_send.split(" ")
