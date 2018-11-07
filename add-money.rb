@@ -18,17 +18,17 @@ b.textarea.when_present.send_keys(["Auto entering contribution now. Please do no
 sleep 5
 File.readlines(contribution_file_path).each do |text_to_send|
   text_to_send = text_to_send.chomp
-  if text_to_send.split(" ").size != 3
+  if text_to_send.split(" ").size < 3
     skipped_list << "Skip: #{text_to_send}"
   end
   amount = text_to_send.split(" ").last
-  user = text_to_send.split(" ")[-2][1..-1]
+  user = text_to_send.split(" ").delete_at(0).delete_at(-1)[1..-1].join(" ").strip
   tries = 0
   begin
     sleep 3
     b.textarea.when_present.send_keys([text_to_send, :enter])
     found = false
-    pattern = /Added.+\[#{user}\].+cash/
+    pattern = /Added.+\[#{Regexp.escape(user)}\].+cash/
     10.times do
       begin
         last_div = b.div(:class => /^messagesWrapper.*/).div(:class => /^messages.*/).divs.last
@@ -56,16 +56,32 @@ File.readlines(contribution_file_path).each do |text_to_send|
     end
   end
 end
+
+
+#print passed
 summary = "Successfully added money:\n #{passed_list.join("\n")}"
 puts summary
-b.textarea.when_present.send_keys([summary, :enter])
+b.textarea.when_present.send_keys(["Successfully added money:", :enter])
+sleep 1
+passed_list.each do |item|
+  b.textarea.when_present.send_keys([item, :enter])
+  sleep 1
+end
 sleep(3)
 summary = "Failed to add money:\n #{failed_list.join("\n")}"
 puts summary
-b.textarea.when_present.send_keys([summary, :enter])
+b.textarea.when_present.send_keys(["Failed to add money:", :enter])
+failed_list.each do |item|
+  b.textarea.when_present.send_keys([item, :enter])
+  sleep 1
+end
 summary = "Skipped due to improper data:\n #{skipped_list.join("\n")}"
 puts summary
-b.textarea.when_present.send_keys([summary, :enter])
+b.textarea.when_present.send_keys(["Skipped due to improper data:", :enter])
+skipped_list.each do |item|
+  b.textarea.when_present.send_keys([item, :enter])
+  sleep 1
+end
 sleep(3)
 b.textarea.when_present.send_keys(["bot finished entering contribution.", :enter])
 sleep(3)
