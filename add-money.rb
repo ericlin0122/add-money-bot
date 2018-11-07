@@ -13,8 +13,11 @@ b.text_field(:css => "[type='password']").when_present.set password
 b.button(:text => "Login").click
 failed_list = []
 passed_list = []
+b.textarea.when_present.send_keys(["Auto entering contribution now. Please do not type anything here until you see 'bot finished entering contribution.' message.", :enter])
+sleep 5
 File.readlines(contribution_file_path).each do |text_to_send|
   text_to_send = text_to_send.chomp
+  amount = text_to_send.split(" ").last
   user = text_to_send.split(" ")[-2][1..-1]
   tries = 0
   begin
@@ -26,7 +29,7 @@ File.readlines(contribution_file_path).each do |text_to_send|
       last_div = b.div(:class => /^messagesWrapper.*/).div(:class => /^messages.*/).divs.last
       if last_div.text =~ pattern
         found = true
-        passed_list << text_to_send
+        passed_list << "#{user} #{amount}"
         puts "sent: #{text_to_send}"
         break
       else
@@ -36,7 +39,7 @@ File.readlines(contribution_file_path).each do |text_to_send|
     raise("unable to send: #{text_to_send}") unless found
   rescue Exception => e
     if tries <= 0
-      failed_list << text_to_send
+      failed_list << "#{user} #{amount}"
       puts e.message
     else
       tries -= 1
@@ -46,12 +49,15 @@ File.readlines(contribution_file_path).each do |text_to_send|
   end
 end
 summary = "Successfully added money:\n #{passed_list.join("\n")}"
+puts summary
 b.textarea.when_present.send_keys([summary, :enter])
 sleep(3)
 summary = "Failed to add money:\n #{failed_list.join("\n")}"
+puts summary
 b.textarea.when_present.send_keys([summary, :enter])
 sleep(3)
-
+b.textarea.when_present.send_keys(["bot finished entering contribution.", :enter])
+sleep(3)
 #logout
 b.button(:css => "[aria-label='User Settings']").when_present.click
 sleep 5
@@ -61,3 +67,4 @@ b.button(:text => "Log Out").when_present.click
 sleep 5
 b.text_field(:css => "[type='email']").when_present
 puts "logged out"
+b.close
