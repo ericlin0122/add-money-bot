@@ -65,7 +65,7 @@ end
 #print passed
 summary = "Successfully added money:\n #{passed_list.join("\n")}"
 puts summary
-b.textarea.when_present.send_keys(["Successfully added money:", :enter])
+b.textarea.when_present.send_keys(["**Successfully added money:**", :enter])
 sleep 1
 passed_list.each do |item|
   b.textarea.when_present.send_keys([item, :enter])
@@ -74,20 +74,20 @@ end
 sleep(3)
 summary = "Failed to add money:\n #{failed_list.join("\n")}"
 puts summary
-b.textarea.when_present.send_keys(["Failed to add money:", :enter])
+b.textarea.when_present.send_keys(["**Failed to add money:**", :enter])
 failed_list.each do |item|
   b.textarea.when_present.send_keys([item, :enter])
   sleep 1
 end
 summary = "Skipped due to improper data:\n #{skipped_list.join("\n")}"
 puts summary
-b.textarea.when_present.send_keys(["Skipped due to improper data:", :enter])
+b.textarea.when_present.send_keys(["**Skipped due to improper data:**", :enter])
 skipped_list.each do |item|
   b.textarea.when_present.send_keys([item, :enter])
   sleep 1
 end
 sleep(3)
-b.textarea.when_present.send_keys(["bot finished entering contribution.", :enter])
+b.textarea.when_present.send_keys(["**bot finished entering contribution.**", :enter])
 sleep(3)
 #logout
 b.button(:css => "[aria-label='User Settings']").when_present.click
