@@ -22,7 +22,10 @@ File.readlines(contribution_file_path).each do |text_to_send|
     skipped_list << "Skip: #{text_to_send}"
   end
   amount = text_to_send.split(" ").last
-  user = text_to_send.split(" ").delete_at(0).delete_at(-1)[1..-1].join(" ").strip
+  splits = text_to_send.split(" ")
+  splits.delete_at(0)
+  splits.delete_at(-1)
+  user = splits.join(" ").strip[1..-1]
   tries = 0
   begin
     sleep 3
