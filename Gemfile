@@ -1,4 +1,4 @@
 source "https://rubygems.org"
-gem 'watir-webdriver', '0.9.1'
-gem 'selenium-webdriver', '2.53.3'
+gem "watir", '6.16.5'
+gem 'selenium-webdriver', '3.141.0'
 gem 'headless', '2.3.1'

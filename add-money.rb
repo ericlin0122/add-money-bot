@@ -10,7 +10,7 @@ room_uri = "https://discordapp.com/channels/#{channel}"
 b.goto(room_uri)
 b.text_field(:css => "[type='email']").when_present.set username
 b.text_field(:css => "[type='password']").when_present.set password
-b.button(:text => "Login").click
+b.button(:visible_text => "Login").click
 failed_list = []
 passed_list = []
 skipped_list = []
@@ -92,9 +92,9 @@ sleep(3)
 #logout
 b.button(:css => "[aria-label='User Settings']").when_present.click
 sleep 5
-b.div(:text => "Log Out").when_present.click
+b.div(:visible_text => "Log Out").when_present.click
 sleep 5
-b.button(:text => "Log Out").when_present.click
+b.button(:visible_text => "Log Out").when_present.click
 sleep 5
 b.text_field(:css => "[type='email']").when_present
 puts "logged out"
