@@ -25,17 +25,17 @@ class Driver
         retry
       end
       profile = Selenium::WebDriver::Firefox::Profile.new
-      @browser = Watir::Browser.new :firefox, :profile => profile
+      @browser = Watir::Browser.new :firefox, :profile => profile, :headless => true, accept_insecure_certs: true
       @browser.window.resize_to(1920, 1080)
-      @browser.window.maximize
+      # @browser.window.maximize
       return @browser
     when "firefox"
       profile = Selenium::WebDriver::Firefox::Profile.new
       profile['startup.homepage_welcome_url'] = "about:blank"
       profile['startup.homepage_welcome_url.additional'] = "about:blank"
-      @browser = Watir::Browser.new :firefox, :profile => profile
+      @browser = Watir::Browser.new :firefox, :profile => profile, accept_insecure_certs: true
       @browser.window.resize_to(1920, 1080)
-      @browser.window.maximize
+      # @browser.window.maximize
       return @browser
     else
       fail("unknown browser type: #{type}")
