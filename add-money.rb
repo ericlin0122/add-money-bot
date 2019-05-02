@@ -8,13 +8,13 @@ driver = Driver.new(true, browser_type)
 b = driver.browser
 room_uri = "https://discordapp.com/channels/#{channel}"
 b.goto(room_uri)
-b.text_field(:css => "[type='email']").when_present.set username
-b.text_field(:css => "[type='password']").when_present.set password
+b.text_field(:css => "[type='email']").wait_until_present.set username
+b.text_field(:css => "[type='password']").wait_until_present.set password
 b.button(:visible_text => "Login").click
 failed_list = []
 passed_list = []
 skipped_list = []
-b.textarea.when_present.send_keys(["Auto entering contribution now. Please do not type anything here until you see 'bot finished entering contribution.' message.", :enter])
+b.textarea.wait_until_present.send_keys(["Auto entering contribution now. Please do not type anything here until you see 'bot finished entering contribution.' message.", :enter])
 sleep 5
 File.readlines(contribution_file_path).each do |text_to_send|
   text_to_send = text_to_send.chomp
@@ -30,9 +30,9 @@ File.readlines(contribution_file_path).each do |text_to_send|
   tries = 0
   begin
     sleep 3
-    b.textarea.when_present.send_keys([text_to_send, :enter])
+    b.textarea.wait_until_present.send_keys([text_to_send, :enter])
     found = false
-    pattern = /Added.+\[#{Regexp.escape(user)}\].+cash/
+    pattern = /Added.+cash/
     10.times do
       begin
         last_div = b.div(:class => /^messagesWrapper.*/).div(:class => /^messages.*/).divs.last
@@ -65,37 +65,37 @@ end
 #print passed
 summary = "Successfully added money:\n #{passed_list.join("\n")}"
 puts summary
-b.textarea.when_present.send_keys(["**Successfully added money:**", :enter])
+b.textarea.wait_until_present.send_keys(["**Successfully added money:**", :enter])
 sleep 1
 passed_list.each do |item|
-  b.textarea.when_present.send_keys([item, :enter])
+  b.textarea.wait_until_present.send_keys([item, :enter])
   sleep 1
 end
 sleep(3)
 summary = "Failed to add money:\n #{failed_list.join("\n")}"
 puts summary
-b.textarea.when_present.send_keys(["**Failed to add money:**", :enter])
+b.textarea.wait_until_present.send_keys(["**Failed to add money:**", :enter])
 failed_list.each do |item|
-  b.textarea.when_present.send_keys([item, :enter])
+  b.textarea.wait_until_present.send_keys([item, :enter])
   sleep 1
 end
 summary = "Skipped due to improper data:\n #{skipped_list.join("\n")}"
 puts summary
-b.textarea.when_present.send_keys(["**Skipped due to improper data:**", :enter])
+b.textarea.wait_until_present.send_keys(["**Skipped due to improper data:**", :enter])
 skipped_list.each do |item|
-  b.textarea.when_present.send_keys([item, :enter])
+  b.textarea.wait_until_present.send_keys([item, :enter])
   sleep 1
 end
 sleep(3)
-b.textarea.when_present.send_keys(["**bot finished entering contribution.**", :enter])
+b.textarea.wait_until_present.send_keys(["**bot finished entering contribution.**", :enter])
 sleep(3)
 #logout
-b.button(:css => "[aria-label='User Settings']").when_present.click
+b.button(:css => "[aria-label='User Settings']").wait_until_present.click
 sleep 5
-b.div(:visible_text => "Log Out").when_present.click
+b.div(:visible_text => "Log Out").wait_until_present.click
 sleep 5
-b.button(:visible_text => "Log Out").when_present.click
+b.button(:visible_text => "Log Out").wait_until_present.click
 sleep 5
-b.text_field(:css => "[type='email']").when_present
+b.text_field(:css => "[type='email']").wait_until_present
 puts "logged out"
 b.close
