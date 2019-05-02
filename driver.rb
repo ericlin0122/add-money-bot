@@ -1,4 +1,4 @@
-require "watir-webdriver"
+require "watir"
 class Driver
   attr_reader :browser
 
